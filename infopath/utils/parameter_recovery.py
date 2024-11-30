@@ -23,22 +23,13 @@ def generate_and_save_data(
     if not os.path.exists(os.path.join(save_path, session_name)):
         os.mkdir(os.path.join(save_path, session_name))
     opt = load_training_opt(log_path)
+    opt.device = "cuda" if torch.cuda.is_available() else "cpu"
     save_opt(save_path, opt)
     model = load_model_and_optimizer(opt, reload=True, last_best=last_best)[0]
     model.rsnn.temperature.data = torch.tensor(model.opt.temperature)
     model.to(model.opt.device)
-    # model.rsnn._w_rec.data[model.rsnn.upsp_rec() < 1e-2] = 0
-
-    # high_syn = model.rsnn.upsp_in() > 10
-    # out_high_syn = torch.where(high_syn)[0]
-    # model.rsnn._w_in.data[high_syn] = (
-    #     model.rsnn.tau / 10 * (model.rsnn.thr0 - model.rsnn.v_rest)
-    # )[out_high_syn]
 
     stims = torch.ones(trials) * 4
-    # print(((model.rsnn._w_rec.data > 10e-8) * 1.0).mean())
-    # model.rsnn._w_in.data[model.rsnn._w_in < 10e-4] = 0
-    # model.rsnn._w_rec.data[model.rsnn._w_rec < 10e-3] = 0
     torch.manual_seed(seed)
     with torch.no_grad():
         spikes, _, _, _ = model(stims)
@@ -132,28 +123,9 @@ def generate_and_save_data(
         neuron_df.to_csv(os.path.join(save_path, "cluster_information"))
 
 
-# for seed in [0, 1, 2, 3, 4]:
-#     generate_and_save_data(
-#         "datasets/GoNoGo_seed{}".format(seed),
-#         "log_dir/c0e11bcfc68c6ab68aa2679b53e4bef58f5b33d5/2024_3_25_10_40_37_mechanism1_2areas_cp/",
-#         area_readout=1,
-#         save=True,
-#         seed=seed,
-#         trials=800,
-#     )
-# generate_and_save_data(
-#     "datasets/GoNoGo_nofb",
-#     # "log_dir/c0e11bcfc68c6ab68aa2679b53e4bef58f5b33d5/2024_3_25_10_40_37_mechanism1_2areas_cp/",
-#     "log_dir/afa49d0731e6f8c21564787e82c28a138b6fa0b6/2024_5_13_14_45_50_teacher_conf/",
-#     area_readout=1,
-#     save=True,
-#     seed=0,
-#     trials=1200,
-# )
 generate_and_save_data(
     "datasets/GoNoGo_nofb_seed0",
-    "log_dir/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf_block",
-    # "log_dir/1bde1ac87d7cb15dc373cf094c2db105bed98319/2024_6_10_21_36_1_teacher_conf_block",
+    "AllModels/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf_block",
     area_readout=1,
     save=True,
     seed=0,
@@ -162,8 +134,7 @@ generate_and_save_data(
 )
 generate_and_save_data(
     "datasets/GoNoGo_withfb1_seed0",
-    "log_dir/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf",
-    # "log_dir/1bde1ac87d7cb15dc373cf094c2db105bed98319/2024_6_10_21_36_0_teacher_conf",
+    "AllModels/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf",
     area_readout=1,
     save=True,
     seed=0,
@@ -172,8 +143,7 @@ generate_and_save_data(
 )
 generate_and_save_data(
     "datasets/GoNoGo_nofb_seed1",
-    "log_dir/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf_block",
-    # "log_dir/1bde1ac87d7cb15dc373cf094c2db105bed98319/2024_6_10_21_36_1_teacher_conf_block",
+    "AllModels/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf_block",
     area_readout=1,
     save=True,
     seed=1,
@@ -183,8 +153,7 @@ generate_and_save_data(
 
 generate_and_save_data(
     "datasets/GoNoGo_withfb1_seed1",
-    "log_dir/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf",
-    # "log_dir/1bde1ac87d7cb15dc373cf094c2db105bed98319/2024_6_10_21_36_0_teacher_conf",
+    "AllModels/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf",
     area_readout=1,
     save=True,
     seed=1,
@@ -193,8 +162,7 @@ generate_and_save_data(
 )
 generate_and_save_data(
     "datasets/GoNoGo_nofb_seed2",
-    "log_dir/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf_block",
-    # "log_dir/1bde1ac87d7cb15dc373cf094c2db105bed98319/2024_6_10_21_36_1_teacher_conf_block",
+    "AllModels/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf_block",
     area_readout=1,
     save=True,
     seed=2,
@@ -203,35 +171,10 @@ generate_and_save_data(
 )
 generate_and_save_data(
     "datasets/GoNoGo_withfb1_seed2",
-    "log_dir/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf",
-    # "log_dir/1bde1ac87d7cb15dc373cf094c2db105bed98319/2024_6_10_21_36_0_teacher_conf",
+    "AllModels/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf",
     area_readout=1,
     save=True,
     seed=2,
     trials=2000,
     last_best="best",
 )
-# generate_and_save_data(
-#     "datasets/GoNoGo_withfb2_seed1",
-#     "log_dir/1d74764c4551eef5158418ea67fbe1a5885dfdb1/2024_5_27_9_46_33_teacher_conf_differential/",
-#     # "log_dir/1bde1ac87d7cb15dc373cf094c2db105bed98319/2024_6_10_21_36_1_teacher_conf_differential",
-#     area_readout=1,
-#     save=True,
-#     seed=1,
-#     trials=2000,
-#     last_best="best",
-# )
-# generate_and_save_data(
-#     "datasets/Mechanism2_areas2",
-#     "./log_dir/62a57e36b1fea8a2585cb2da0613280e0a5fb0d4/2024_2_8_17_9_10_mechanism2_2areas/",
-#     area_readout=1,
-#     save=True,
-#     seed=3,
-# )
-
-# generate_and_save_data(
-#     "datasets/Mechanism3",
-#     "./log_dir/0909abaacfc6a68eb8e7cb3f04bc16d2ae8ef3bd/2024_2_7_17_35_8_trial/",
-#     area_readout=1,
-#     save=True,
-# )

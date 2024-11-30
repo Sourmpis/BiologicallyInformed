@@ -77,7 +77,7 @@ def save_datastructure(
             df_entry["reaction_time_piezo"] = [mat["ReactionTimes_All"][i][trial]]
             df_entry["reaction_time_jaw"] = [mat["LickOnsets"][i][trial]]
             df_entry["stim"] = [mat["StimIndices_All"][i][trial]]
-            df_entry["trial_active"] = [mat["ActiveIndices"][i][trial]]
+            df_entry["trial_active"] = 1
             jaw_path = os.path.join(session_path, "jaw_trace", "trial_{}".format(trial))
             tongue_path = os.path.join(
                 session_path, "tongue_trace", "trial_{}".format(trial)

@@ -318,66 +318,7 @@ class PseudoData:
 
 
 if __name__ == "__main__":
-    # conf = {
-    #     "onsets": [4, 8, 12],
-    #     "tau_rise": 5,
-    #     "tau_fall": 20,
-    #     "firing_rates": [8, 16],
-    #     "firing_rates_std": [2, 1],
-    #     "p_trial_type": 0.8,
-    #     "trials_per_session": 400,
-    #     "mod_prob": [0, 0, 0.2, 0.6, 0.2],
-    #     "pEI": 0.8,
-    # }
 
-    # path = f"datasets/PseudoData_3areas_chain"
-    # pseudo_data = PseudoData(
-    #     path,
-    #     onsets=conf["onsets"],
-    #     tau_rise=conf["tau_rise"],
-    #     tau_fall=conf["tau_fall"],
-    #     firing_rates=conf["firing_rates"],
-    #     firing_rates_std=conf["firing_rates_std"],
-    #     p_trial_type=conf["p_trial_type"],
-    #     trials_per_session=conf["trials_per_session"],
-    #     mod_prob=conf["mod_prob"],
-    #     pEI=conf["pEI"],
-    #     num_sessions=1,
-    #     neurons_per_sess=750,
-    #     structure="chain",
-    # )
-    # json.dump(conf, open(path + "/conf.json", "w"))
-
-    # conf = {
-    #     "onsets": [4, 8, 12],
-    #     "tau_rise": 5,
-    #     "tau_fall": 20,
-    #     "firing_rates": [8, 16],
-    #     "firing_rates_std": [2, 1],
-    #     "p_trial_type": 0.8,
-    #     "trials_per_session": 400,
-    #     "mod_prob": [0, 0, 0.2, 0.6, 0.2],
-    #     "pEI": 0.8,
-    # }
-
-    # path = f"datasets/PseudoData_3areas_parallel"
-    # pseudo_data = PseudoData(
-    #     path,
-    #     onsets=conf["onsets"],
-    #     tau_rise=conf["tau_rise"],
-    #     tau_fall=conf["tau_fall"],
-    #     firing_rates=conf["firing_rates"],
-    #     firing_rates_std=conf["firing_rates_std"],
-    #     p_trial_type=conf["p_trial_type"],
-    #     trials_per_session=conf["trials_per_session"],
-    #     mod_prob=conf["mod_prob"],
-    #     pEI=conf["pEI"],
-    #     num_sessions=1,
-    #     neurons_per_sess=750,
-    #     structure="parallel",
-    # )
-    # json.dump(conf, open(path + "/conf.json", "w"))
-    # mean and std calculated from Vahid's data
     conf = {
         "onsets": [4, 12],
         "tau_rise": 5,
@@ -391,7 +332,7 @@ if __name__ == "__main__":
         "stim_prob": False,
     }
 
-    path = f"datasets/PseudoData_2areas_abstract_gonogo"
+    path = f"datasets/PseudoData_2areas_abstract_gonogo_v1"
     pseudo_data = PseudoData(
         path,
         onsets=conf["onsets"],

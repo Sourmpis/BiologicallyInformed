@@ -1,8 +1,8 @@
-# Trial matching code
+# Biologically Informed code
 
-This is the code for the publication:
+This is the code for the paper:
 C. Sourmpis, C. Petersen, W. Gerstner & G. Bellec
-[*Trial matching: capturing variability with data-constrained spiking neural networks*](https://neurips.cc/virtual/2023/poster/71974), accepted at NeurIPS 2023.
+[*Biologically informed cortical models predict optogenetic perturbations*](https://www.biorxiv.org/content/10.1101/2024.09.27.615361v1.full).
 
 Contact:
 [christos.sourmpis@epfl.ch](mailto:christos.sourmpis@epfl.ch)
@@ -11,17 +11,14 @@ Contact:
 ## Glossary
 1) [Installation](#Installation)
 2) [Download recorded data from Esmaeli et al. 2021](#download-recorded-data)
-3) [Generate simpler artificial data](#generate-artificial-data)
-4) [Load pre-trained models](#pre-trained-models)
-5) [Code snippet for computing the trial-matching loss function](#compute-the-trial-matching-loss-function)
-6) [Generate paper figures](#generate-figures-from-a-pre-trained-model)
-7) [Training the RSNN](#training-the-rsnn-model)
+3) [Generate synthetic data](#generate-synthetic-data)
+4) [Generate paper figures](#generate-figures-from-a-pre-trained-model)
 
 ## Installation
-We suggest installing the code with conda and you can do this in the following way:
+We suggest running the code using docker and in particular the image nvcr.io/nvidia/pytorch:23.05-py3.
+Once your container is running you can install the code by running the following command:
 
 ```bash
-conda create --name trial-match python=3.9.5
 pip install -e .
 ```
 Now you should be able to run the code.
@@ -44,80 +41,22 @@ mv tmp/Electrophysiology/Data/spikeData_v9.mat datasets/spikeData_v9.mat
 rm -r tmp
 ```
 
-## Generate Artificial data
-For the artificial data just run the command:
+Now we need to prepare the data. In order to do so run the following command:
+
 ```bash
-python datasets/pseudodata.py
-```
-This will generate the data for Figure 2 and the data for some of the supplementary Figures.
-
-## Pre-trained models 
-
-One can load a pre-trained model as follows.
-
-```python
-from infopath.model_loader import load_model_and_optimizer
-from infopath.config import load_training_opt
-
-log_path = "log_dir/trained_models/main_model/"
-opt = load_training_opt(log_path)
-opt.log_path = log_path
-opt.device = "cpu"
-model = load_model_and_optimizer(opt, reload=True, last_best="last")[0]
+python datasets/datastructure2datasetandvideo_Vahid.py
 ```
 
-For instance, the recurrent weights of the model can be obtained with the following:
-```python
-model.rsnn._w_rec # shape: 2 x 1500 x 1500
+## Generate synthetic data
+For the synthetic data just run the commands:
+
+```bash
+python datasets/pseudodata2areas.py
+python infopath/utils/parameter_recovery.py
 ```
-
-To simulate a raster of 400 trials from the model one can do:
-```python
-with torch.no_grad():
-    stims = torch.randint(2, size=(400,)) # binary vector of conditions (absence or presence of whisker stimulation)
-    spikes, voltages, jaw, state = model(stims) # generation of the input spikes and simulation of the RSNN
-```
-
-## Compute the trial matching loss-function
-
-Calculate the trial-matching loss with the hard matching (Hungarian Algorithm)
-
-Args:
-
-
-* filt_data_spikes (torch.tensor): $\mathcal{T}_{trial}(z^\mathcal{D})$, with dimension: K x T
-
-* filt_model_spikes (torch.tensor): $\mathcal{T}_{trial}(z)$, with dimension K'  x T
-
-```python
-def hard_trial_matching_loss(filt_data_spikes, filt_model_spikes):
-    # Subsample the biggest tensor, so both data and model have the same #trials
-    min_trials = min(filt_model_spikes.shape[0], filt_data_spikes.shape[0])
-    filt_data_spikes = filt_data_spikes[:min_trials] # shape: K x T (assuming K = min(K,K'))
-    filt_model_spikes = filt_model_spikes[:min_trials] # shape: K x T
-    with torch.no_grad():
-        cost = mse_2d(filt_model_spikes.T, filt_data_spikes.T) # shape: K x K 
-        keepx, ytox = linear_sum_assignment(cost.detach().cpu().numpy()) # keepx and ytox are trial indices
-    return torch.nn.MSELoss()(filt_model_spikes[keepx], filt_data_spikes[ytox])
-```
-
-The function above is in the `infopath/losses.py` file.
-
-You can explore the loss function in a simple demo in [trial_matching_loss_demo.ipynb](trial_matching_loss_demo.ipynb).
+This will generate the data needed for Figure 1-2 and the data for some of the supplementary Figures.
 
 
 ## Generate figures from a pre-trained model
 
-The code is sufficient in order to generate all the figures of the paper, in the folder `Figures` one can find the paper figures and notebooks to generate all the panels.
-
-## Training the RSNN model
-
-Training models will require a little bit better understanding of the code, HOWEVER, you can train the main model with the following command, and you can start exploring the parameters, by changing the options in the file configs/main_model/opt.json:
-
-```bash
-python3 infopath/train.py --config=main_model
-```
-The previous command is supposed to be run on GPU. Be careful that this training will require GPU RAM of at least 40GB. If you want to run it with CPU, you can change the field "device" in the configs/main_model/opt.json.
-
-### Notes
-For the Figure 4C you might notice that the UMAP is not the same as the one with the paper, this happens because we changed the function that generates the input spikes for readability. However, you can appreciate that the message of the main paper remains the same.
+The code is sufficient in order to generate all the figures of the paper, in the folder `Figures` one can find the notebooks to generate all the panels.
