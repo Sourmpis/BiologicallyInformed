@@ -3,18 +3,10 @@ import pandas as pd
 from scipy.stats import pearsonr, wilcoxon
 import matplotlib.pyplot as plt
 import seaborn as sns
-from statannot import add_stat_annotation
 from matplotlib.patches import FancyArrowPatch
-
-# from umap import UMAP
 from sklearn.decomposition import PCA
 from infopath.utils.functions import *
 from infopath.model_loader import load_model_and_optimizer
-
-# font = {"weight": "normal", "size": 6, "family": "sans-serif"}
-# import matplotlib
-
-# matplotlib.rc("font", **font)
 
 
 def raster_plot(ax, spikes, dt=1):
@@ -473,42 +465,6 @@ def light_area(light, batch_size, model, area):
     light_source = light_source.permute(2, 1, 0) * 20 * model.rsnn.base_thr[0]
     return light_source
 
-
-def show_input_weights_per_area(
-    weights, area_index, exc_index, opt, path="RSNN_Figures/Figure3", title="whisker"
-):
-    df = pd.DataFrame(columns=("weight", "exc", "area"))
-    for i in range(weights.shape[0]):
-        df_entry = {}
-        df_entry["weight"] = weights[i].mean().item()
-        df_entry["exc"] = "excitatory" if exc_index[i] else "inhibitory"
-        df_entry["area"] = opt.areas[area_index[i]]
-        df = df.append(df_entry, ignore_index=True)
-    x = "area"
-    y = "weight"
-    order = opt.areas
-
-    fig, ax = plot_with_size(120, 200)
-    ax = sns.boxplot(ax=ax, x="area", y="weight", data=df, whis=1.5)
-    ax.set_ylabel("Total incoming weights", fontsize=9)
-    ax.set_xlabel("Area", fontsize=9)
-
-    box_pairs = [(i, j) for k, j in enumerate(opt.areas) for i in opt.areas[:k]]
-    add_stat_annotation(
-        ax,
-        data=df,
-        x=x,
-        y=y,
-        order=order,
-        box_pairs=box_pairs,
-        test="Mann-Whitney",
-        text_format="star",
-        verbose=0,
-        loc="inside",
-    )
-    ax.set_ylim(0, 0.1)
-
-    fig.savefig(f"{path}/{title}_weights.pdf")
 
 
 def input_current_rec(model, spikes, limits_cur, opt, dt=0):
