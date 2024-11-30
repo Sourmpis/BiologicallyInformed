@@ -40,8 +40,6 @@ def setup_package():
         install_requires=[
             "mat73==0.58",
             "tqdm==4.64.1",
-            "tsne-torch==1.0.1",
-            "umap-learn==0.5.3",
             "geomloss==0.2.5",
             "seaborn==0.12.0",
             "statannot==0.2.3",
