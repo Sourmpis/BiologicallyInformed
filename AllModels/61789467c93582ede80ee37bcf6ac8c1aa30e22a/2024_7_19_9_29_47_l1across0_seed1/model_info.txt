@@ -1,0 +1,17 @@
+400      best_trial_type_t_trial_ratio_model.ckpt 
+400      best_data_loss_model.ckpt 
+800      best_trial_type_t_trial_ratio_model.ckpt 
+800      best_data_loss_model.ckpt 
+1200      best_t_trial_ratio_model.ckpt 
+1200      best_data_loss_model.ckpt 
+1600      best_t_trial_ratio_model.ckpt 
+4000      best_trial_type_t_trial_ratio_model.ckpt 
+5600      best_t_trial_ratio_model.ckpt 
+7200      best_trial_type_model.ckpt 
+7600      best_t_trial_ratio_model.ckpt 
+8400      best_data_loss_model.ckpt 
+9200      best_trial_type_t_trial_ratio_model.ckpt 
+9600      best_trial_type_t_trial_ratio_model.ckpt 
+10000      best_data_loss_model.ckpt 
+18800      best_t_trial_ratio_model.ckpt 
+18800      best_data_loss_model.ckpt 

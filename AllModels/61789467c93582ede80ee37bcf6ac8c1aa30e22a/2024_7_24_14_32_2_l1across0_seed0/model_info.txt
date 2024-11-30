@@ -1,0 +1,13 @@
+3600      best_trial_type_t_trial_ratio_model.ckpt 
+3600      best_data_loss_model.ckpt 
+4000      best_trial_type_model.ckpt 
+4000      best_data_loss_model.ckpt 
+4400      best_data_loss_model.ckpt 
+4800      best_data_loss_model.ckpt 
+6400      best_t_trial_ratio_model.ckpt 
+6400      best_data_loss_model.ckpt 
+7200      best_trial_type_t_trial_ratio_model.ckpt 
+8000      best_trial_type_model.ckpt 
+10000      best_trial_type_model.ckpt 
+12000      best_trial_type_model.ckpt 
+12800      best_trial_type_model.ckpt 
