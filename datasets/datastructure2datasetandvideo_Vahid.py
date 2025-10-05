@@ -29,7 +29,11 @@ def save_datastructure(
     for i, sess in enumerate(mat["mouse"]):
         if mat["expert"][i] != expert:
             continue
-        session_path = os.path.join(path, sess + "_" + mat["date"][i])
+        session = sess + "_" + mat["date"][i]
+        if session == "VE056_20170523":  # this session is corrupted
+            print("skipping corrupted session")
+            continue
+        session_path = os.path.join(path, session)
         try:
             os.mkdir(session_path)
         except:

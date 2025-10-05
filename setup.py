@@ -19,7 +19,7 @@ def setup_package():
         long_description = f.read()
     meta = meta_data()
     setup(
-        name="rsnn",
+        name="infopath",
         version=meta["version"],
         description=meta["description"],
         long_description=long_description,
@@ -38,12 +38,16 @@ def setup_package():
         ],
         packages=find_packages(),
         install_requires=[
+            "matplotlib==3.6.3",
+            "scikit-learn==1.2.2",
             "mat73==0.58",
             "tqdm==4.64.1",
             "geomloss==0.2.5",
             "seaborn==0.12.0",
             "statannot==0.2.3",
             "torchmultitask @ git+https://github.com/guillaumeBellec/multitask",
+            "jupyterlab==2.3.2",
+            "jupyter",
         ],
     )
 

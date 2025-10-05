@@ -87,8 +87,6 @@ def train(opt, model, netD, optimizerG, optimizerD, step=-1):
         print("T'_{trial} data train and test", t_trial_pearson_data)
         print("the data have trial type distribution: ", data_perc)
 
-    for name, model_param in model.named_parameters():
-        print(name)
     optimizerG.param_groups[0]["initial_lr"] = optimizerG.param_groups[0]["lr"]
     schedulerG = torch.optim.lr_scheduler.StepLR(optimizerG, step_size=100, gamma=0.99)
     if opt.gan_loss:
@@ -179,7 +177,7 @@ def train(opt, model, netD, optimizerG, optimizerD, step=-1):
                 mem_loss = (((volt - model.rsnn.v_rest) / thr_rest) ** 2).mean() ** 0.5
 
             conn_loss = 0
-            across = model.rsnn.off_diag.cuda()
+            across = model.rsnn.off_diag.to(opt.device)
             # for teacher only to set the shape connection
             if "2areas_abstract" in opt.datapath and opt.block_graph == []:
                 area1 = model.rsnn.area_index == 0
@@ -396,7 +394,7 @@ def t_trial_pearson(
 @torch.no_grad()
 def weight_decay(model, w_rec, w_jaw, w_in):
     opt = model.opt
-    across = model.rsnn.off_diag.cuda()
+    across = model.rsnn.off_diag.to(opt.device)
     valid = w_rec > 1e-7
     model.rsnn._w_rec.data[valid] -= opt.l1_decay * opt.lr / w_rec[valid] ** 0.5
     model.rsnn._w_rec.data[valid & across] -= (
@@ -690,7 +688,11 @@ if __name__ == "__main__":
         np.random.seed(opt.seed)
 
     # load model
-    dev = opt.device
+    dev = (
+        opt.device
+        if opt.device.type == "cuda" and torch.cuda.is_available()
+        else torch.device("cpu")
+    )
     opt.device = torch.device("cpu")
     model, netD, optimizerG, optimizerD = load_model_and_optimizer(opt)
     opt.device = dev

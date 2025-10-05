@@ -21,7 +21,13 @@ Once your container is running you can install the code by running the following
 ```bash
 pip install -e .
 ```
-Now you should be able to run the code.
+
+Alternatively you can create a conda environment by executing the file setup.sh.
+
+```bash
+bash setup.sh
+```
+This will create a conda environment named `bioinfo` with all the dependencies needed.
 
 ## Download recorded data
 Be aware that the full data is ~55GB, but we will use only ~3GB in the end.
@@ -39,6 +45,7 @@ wget https://zenodo.org/record/4720013/files/Esmaeili_data_code.zip -P datasets
 unzip datasets/Esmaeili_data_code.zip -d tmp
 mv tmp/Electrophysiology/Data/spikeData_v9.mat datasets/spikeData_v9.mat
 rm -r tmp
+rm datasets/Esmaeili_data_code.zip
 ```
 
 Now we need to prepare the data. In order to do so run the following command:
@@ -60,3 +67,16 @@ This will generate the data needed for Figure 1-2 and the data for some of the s
 ## Generate figures from a pre-trained model
 
 The code is sufficient in order to generate all the figures of the paper, in the folder `Figures` one can find the notebooks to generate all the panels.
+
+## Training a bioRNN model
+
+You can start training a bioRNN and a sigma RNN model with the following commands, and you can start exploring the parameters, by changing the options (opt.json) in the folders configs/nofb/student_full/opt.json or configs/nofb/student_sigmoid/opt.json respectively:
+
+```bash
+# Train a bioRNN model on the synthetic data without feedback
+python infopath/train.py --config=pseudo_data/nofb/student_full
+
+# Train a sigmaRNN model on the synthetic data without feedback
+python infopath/train.py --config=pseudo_data/nofb/student_sigmoid
+```
+The previous command normally runs on a GPU. If you want to run it with CPU, you can change the field "device" in the opt.json in the corresponding folder.
